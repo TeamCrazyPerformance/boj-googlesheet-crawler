@@ -5,8 +5,10 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import timeit
+from datetime import date
 
 import parser
+import time_util as tu
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
@@ -31,12 +33,11 @@ def main(crawled_data):
 
     service = build('sheets', 'v4', credentials=creds)
 
-    # sheet 가져오기
     sheet = service.spreadsheets()
 
     # 테스트 스프레드 시트
     spreadsheet_id = '11jFC-jZa54KWcST_vdgn2ZcmzMhQ5TrpV1dWsYVboJA'
-    range_name = 'cycle01!B2:Z'
+    range_name = get_range_name()
 
     body = {
         'values': crawled_data,
@@ -51,6 +52,17 @@ def main(crawled_data):
     )
 
     response = request.execute()
+
+
+def get_range_name():
+    sheet_range = '!B2:Z'
+    base_start_date = date(2019, 5, 6)
+
+    start_date, end_date = tu.get_start_and_end_of_this_week()
+    week_idx = ((start_date - base_start_date)//7).days + 1
+    week_range = "[{0:02}.{1:02} - {2:02}.{3:02}]".format(start_date.month, start_date.day, end_date.month, end_date.day)
+
+    return "cycle {0:02} ".format(week_idx) + week_range + sheet_range
 
 
 if __name__ == '__main__':
