@@ -14,7 +14,7 @@ import time_util as tu
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 
-def main(crawled_data):
+def main(crawled_data: list):
     creds = None
     if os.path.exists('token.pickle'):
         with open('token.pickle', 'rb') as token:
@@ -54,7 +54,7 @@ def main(crawled_data):
     response = request.execute()
 
 
-def get_range_name():
+def get_range_name() -> str:
     sheet_range = '!B2:Z'
     base_start_date = date(2019, 5, 6)
 
