@@ -2,6 +2,7 @@ import requests
 import re
 from datetime import datetime
 from bs4 import BeautifulSoup
+from multiprocessing import Pool
 
 
 BASE_URL = "https://www.acmicpc.net"
@@ -62,3 +63,14 @@ def convert_datetime(date: str) -> datetime:
     t = list(map(int, re.findall("\d+", date)))
 
     return datetime(t[0], t[1], t[2], t[3], t[4], t[5])
+
+
+def get_data_from_boj() -> list:
+    boj_id_list = ['chsun0303', 'achaean', 'rm0576', 'joi0104', 'ooop0422', 'jjulia24', 'lkw4357', 'coxo9535',
+                   'sabin5105']
+
+    pool = Pool(processes=4)
+    links = pool.map(get_submission_links_from_user, boj_id_list)
+    data = pool.map(get_submissions, links)
+
+    return data

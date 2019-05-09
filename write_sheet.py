@@ -4,6 +4,7 @@ import os.path
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+import timeit
 
 import parser
 
@@ -35,7 +36,7 @@ def main(crawled_data):
 
     # 테스트 스프레드 시트
     spreadsheet_id = '11jFC-jZa54KWcST_vdgn2ZcmzMhQ5TrpV1dWsYVboJA'
-    range_name = 'cycle01!A2:Z'
+    range_name = 'cycle01!B2:Z'
 
     body = {
         'values': crawled_data,
@@ -52,19 +53,12 @@ def main(crawled_data):
     response = request.execute()
 
 
-def get_data_from_boj() -> list:
-    boj_id_list = ['chsun0303', 'achaean', 'rm0576', 'joi0104', 'ooop0422', 'jjulia24', 'lkw4357', 'coxo9535',
-                   'sabin5105']
-
-    data = []
-    for boj_id in boj_id_list:
-        links = parser.get_submission_links_from_user(boj_id)
-        personal_data = parser.get_submissions(links)
-        data.append(personal_data)
-
-    return data
-
-
 if __name__ == '__main__':
-    crawled_data = get_data_from_boj()
+    start = timeit.default_timer()
+
+    crawled_data = parser.get_data_from_boj()
     main(crawled_data)
+
+    end = timeit.default_timer()
+
+    print("total: ", end - start)
